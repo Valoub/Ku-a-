@@ -1,0 +1,13 @@
+{
+  "name": "kuca-app",
+  "version": "1.0.0",
+  "description": "Kuça - swipe immobilier",
+  "scripts": {
+    "sync": "npx cap sync"
+  },
+  "dependencies": {
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2"
+  }
+}
