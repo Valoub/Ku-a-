@@ -18,6 +18,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Installer Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Installer les dépendances du projet
+        run: npm ci
+
+      - name: Régénérer les fichiers Capacitor (web assets + plugins Cordova)
+        run: npx cap sync android
+
       - name: Accepter les licences du SDK Android (déjà préinstallé)
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
