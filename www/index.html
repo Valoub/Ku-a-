@@ -103,7 +103,9 @@
   .logo{
     display:flex;align-items:center;gap:7px;
     font-weight:800;font-size:19px;letter-spacing:-0.3px;
+    cursor:pointer;user-select:none;
   }
+  .logo:active{opacity:0.85;}
   .logo .dot{
     width:22px;height:22px;
   }
@@ -120,6 +122,30 @@
     background:var(--line);padding:6px 11px;border-radius:999px;
   }
   .sent-pill b{color:var(--ink);}
+  .dev-menu-backdrop{
+    position:absolute;inset:0;z-index:240;display:none;
+  }
+  .dev-menu-backdrop.show{display:block;}
+  .dev-menu{
+    position:absolute;top:60px;left:20px;
+    background:#fff;border-radius:16px;
+    box-shadow:0 14px 34px rgba(22,24,29,0.20);
+    border:1px solid var(--line);
+    padding:6px;min-width:248px;
+    display:none;flex-direction:column;gap:2px;
+    z-index:241;
+  }
+  .dev-menu.show{display:flex;animation:overlayFade 0.16s ease;}
+  .dev-menu-item{
+    display:flex;align-items:center;gap:10px;
+    padding:11px 12px;border-radius:11px;
+    background:none;border:none;text-align:left;
+    font-family:inherit;font-size:13px;font-weight:700;color:var(--ink);
+    cursor:pointer;width:100%;
+  }
+  .dev-menu-item:active{background:var(--line);}
+  .dev-menu-item .dm-ic{font-size:16px;width:20px;text-align:center;flex-shrink:0;}
+  .dev-menu-sep{height:1px;background:var(--line);margin:4px 6px;}
   .view{
     flex:1;
     position:relative;
@@ -380,10 +406,8 @@
   /* ---- TOAST ---- */
   /* ---- DEMO CONTROL (hors téléphone) ---- */
   .demo-controls{
-    margin-top:16px;text-align:center;
-    display:flex;flex-wrap:wrap;gap:10px;justify-content:center;
+    display:none;
   }
-  .demo-controls .demo-label{ width:100%; }
   .demo-btn{
     font-family:'Manrope',sans-serif;font-size:12.5px;font-weight:700;
     background:#fff;color:var(--ink);border:1.5px solid var(--line);
@@ -600,6 +624,14 @@
       <div class="sent-pill">envoyés <b id="sentCount">0</b></div>
       <div class="avatar-btn" id="avatarBtn">VB</div>
     </div>
+  </div>
+
+  <div class="dev-menu-backdrop" id="devMenuBackdrop"></div>
+  <div class="dev-menu" id="devMenu">
+    <button class="dev-menu-item" id="devRestartBtn"><span class="dm-ic">📱</span> Redémarrer l'application</button>
+    <div class="dev-menu-sep"></div>
+    <button class="dev-menu-item" id="devAgencyBtn"><span class="dm-ic">🔔</span> Simuler une réponse d'agence</button>
+    <button class="dev-menu-item" id="devInviteBtn"><span class="dm-ic">🤝</span> Simuler une invitation</button>
   </div>
 
   <div class="view active" id="view-discover">
@@ -1580,6 +1612,37 @@ document.getElementById('simulateMatchBtn').addEventListener('click', ()=>{
 });
 document.getElementById('matchClose').addEventListener('click', closeMatchOverlay);
 matchOverlay.addEventListener('click', (e)=>{ if(e.target === matchOverlay) closeMatchOverlay(); });
+
+// ---- Menu minimaliste (logo Kuça) ----
+const devMenu = document.getElementById('devMenu');
+const devMenuBackdrop = document.getElementById('devMenuBackdrop');
+const devLogo = document.querySelector('.topbar .logo');
+
+function openDevMenu(){
+  devMenu.classList.add('show');
+  devMenuBackdrop.classList.add('show');
+}
+function closeDevMenu(){
+  devMenu.classList.remove('show');
+  devMenuBackdrop.classList.remove('show');
+}
+devLogo.addEventListener('click', ()=>{
+  devMenu.classList.contains('show') ? closeDevMenu() : openDevMenu();
+});
+devMenuBackdrop.addEventListener('click', closeDevMenu);
+
+document.getElementById('devRestartBtn').addEventListener('click', ()=>{
+  closeDevMenu();
+  document.getElementById('launchAppBtn').click();
+});
+document.getElementById('devAgencyBtn').addEventListener('click', ()=>{
+  closeDevMenu();
+  document.getElementById('simulateMatchBtn').click();
+});
+document.getElementById('devInviteBtn').addEventListener('click', ()=>{
+  closeDevMenu();
+  document.getElementById('simulateInviteBtn').click();
+});
 </script>
 </body>
 </html>
