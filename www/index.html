@@ -1336,9 +1336,17 @@ document.getElementById('applySearch').addEventListener('click', ()=>{
     pieces: Number(critPieces.value),
     tags: Array.from(document.querySelectorAll('#critTags .chip.on')).map(c=>c.dataset.tag)
   };
+
+  // Réorganise les annonces pas encore vues selon le nouveau matching,
+  // sans toucher à celles déjà passées en revue (historique/undo intacts).
+  const seen = listings.slice(0, index);
+  const remaining = listings.slice(index);
+  remaining.sort((a, b) => computeMatch(b, criteria) - computeMatch(a, criteria));
+  listings.splice(0, listings.length, ...seen, ...remaining);
+
   document.querySelector('.tab[data-view="discover"]').click();
   renderStack();
-  showToast('Matching mis à jour selon ta recherche');
+  showToast('Annonces réorganisées selon ta recherche');
 });
 
 renderStack();
