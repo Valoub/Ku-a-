@@ -304,15 +304,6 @@
     color:#fff;font-family:'Manrope',sans-serif;font-weight:800;font-size:14px;
     cursor:pointer;margin-top:6px;
   }
-  .coloc-btn{
-    width:100%;display:flex;align-items:center;gap:12px;
-    padding:14px;border:1.5px solid var(--line);border-radius:16px;
-    background:#fff;cursor:pointer;text-align:left;font-family:'Manrope',sans-serif;
-  }
-  .coloc-btn-ic{font-size:22px;flex-shrink:0;}
-  .coloc-btn-title{display:block;font-size:13.5px;font-weight:800;color:var(--ink);}
-  .coloc-btn-sub{display:block;font-size:11px;color:var(--muted);font-weight:600;margin-top:1px;}
-  .coloc-btn-arrow{margin-left:auto;color:var(--muted);font-size:18px;}
   .roommates-block{display:flex;flex-direction:column;gap:10px;margin-top:4px;}
   .roommate-card{
     display:flex;gap:10px;padding:10px;border:1px solid var(--line);border-radius:14px;
@@ -691,74 +682,11 @@
       <div class="chip-row" id="critProjet">
         <div class="chip toggle on" data-projet="achat">Achat</div>
         <div class="chip toggle" data-projet="location">Location</div>
+        <div class="chip toggle" data-projet="colocation">Colocation</div>
       </div>
     </div>
 
-    <div class="field">
-      <label>Quartier <span class="val" id="valQuartier">Tous</span></label>
-      <select id="critQuartier">
-        <option value="Tous">Tous les quartiers</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label>Type de bien <span class="val" id="valType">Tous</span></label>
-      <select id="critType">
-        <option value="Tous">Tous</option>
-        <option value="Appartement">Appartement</option>
-        <option value="Maison">Maison</option>
-        <option value="Studio">Studio</option>
-      </select>
-    </div>
-
-    <div class="field">
-      <label id="labelBudget">Budget max <span class="val" id="valBudget">300 000 €</span></label>
-      <input type="range" id="critBudget" min="100000" max="450000" step="5000" value="300000">
-    </div>
-
-    <div class="field">
-      <label>Surface min <span class="val" id="valSurface">40 m²</span></label>
-      <input type="range" id="critSurface" min="15" max="130" step="5" value="40">
-    </div>
-
-    <div class="field">
-      <label>Pièces min <span class="val" id="valPieces">2</span></label>
-      <input type="range" id="critPieces" min="1" max="5" step="1" value="2">
-    </div>
-
-    <div class="field">
-      <label>Équipements souhaités</label>
-      <div class="chip-row" id="critTags">
-        <div class="chip" data-tag="balcon">Balcon / terrasse</div>
-        <div class="chip" data-tag="parking">Parking</div>
-        <div class="chip" data-tag="ascenseur">Ascenseur</div>
-        <div class="chip" data-tag="cave">Cave</div>
-      </div>
-    </div>
-
-    <button class="apply-btn" id="applySearch">Mettre à jour le matching</button>
-
-    <div class="section-label" style="margin-top:22px;">Recherche colocation</div>
-    <button class="coloc-btn" id="colocOpenBtn">
-      <span class="coloc-btn-ic">🏠</span>
-      <span>
-        <span class="coloc-btn-title">Chercher une colocation</span>
-        <span class="coloc-btn-sub" id="colocBtnSub">Définis ton profil de coloc idéal</span>
-      </span>
-      <span class="coloc-btn-arrow">›</span>
-    </button>
-
-    <div class="section-label" style="margin-top:22px;">Recherche partagée</div>
-    <div id="sharedSearchBlock"></div>
-  </div>
-
-  <div class="sheet-backdrop" id="colocBackdrop"></div>
-  <div class="detail-sheet" id="colocSheet">
-    <div class="sheet-handle-zone" id="colocHandleZone"><div class="sheet-handle"></div></div>
-    <div class="sheet-scroll" id="colocScroll">
-      <h1 style="font-size:20px;margin:6px 0 2px;font-weight:800;">Mon profil colocataire</h1>
-      <p class="sub" style="font-size:12px;color:var(--muted);margin:0 0 18px;">Utilisé uniquement pour matcher avec des colocations disponibles.</p>
-
+    <div id="colocFieldsBlock" style="display:none;">
       <div class="field">
         <label>Je recherche des colocataires <span class="val" id="valColocSexe">Peu importe</span></label>
         <div class="chip-row" id="colocSexe">
@@ -808,16 +736,54 @@
           <div class="chip toggle" data-ambiance="Festive">Festive</div>
         </div>
       </div>
+    </div>
 
-      <div class="field">
-        <label>Budget max <span class="val" id="valColocBudget">600 €/mois</span></label>
-        <input type="range" id="colocBudget" min="250" max="1000" step="25" value="600">
+    <div class="field">
+      <label>Quartier <span class="val" id="valQuartier">Tous</span></label>
+      <select id="critQuartier">
+        <option value="Tous">Tous les quartiers</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label>Type de bien <span class="val" id="valType">Tous</span></label>
+      <select id="critType">
+        <option value="Tous">Tous</option>
+        <option value="Appartement">Appartement</option>
+        <option value="Maison">Maison</option>
+        <option value="Studio">Studio</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label id="labelBudget">Budget max <span class="val" id="valBudget">300 000 €</span></label>
+      <input type="range" id="critBudget" min="100000" max="450000" step="5000" value="300000">
+    </div>
+
+    <div class="field">
+      <label>Surface min <span class="val" id="valSurface">40 m²</span></label>
+      <input type="range" id="critSurface" min="15" max="130" step="5" value="40">
+    </div>
+
+    <div class="field">
+      <label>Pièces min <span class="val" id="valPieces">2</span></label>
+      <input type="range" id="critPieces" min="1" max="5" step="1" value="2">
+    </div>
+
+    <div class="field">
+      <label>Équipements souhaités</label>
+      <div class="chip-row" id="critTags">
+        <div class="chip" data-tag="balcon">Balcon / terrasse</div>
+        <div class="chip" data-tag="parking">Parking</div>
+        <div class="chip" data-tag="ascenseur">Ascenseur</div>
+        <div class="chip" data-tag="cave">Cave</div>
       </div>
     </div>
-    <div class="sheet-actions">
-      <button class="no" id="colocCancel">Annuler</button>
-      <button class="go" id="colocApply">Voir les colocations</button>
-    </div>
+
+    <button class="apply-btn" id="applySearch">Mettre à jour le matching</button>
+
+    <div class="section-label" style="margin-top:22px;">Recherche partagée</div>
+    <div id="sharedSearchBlock"></div>
   </div>
 
   <div class="view" id="view-profile">
@@ -1003,7 +969,7 @@ const colocListings = [
 
 let criteria = { projet:"achat", quartier:"Tous", type:"Tous", budget:300000, surface:40, pieces:2, tags:[] };
 
-let colocCriteria = { sexe:"peu importe", ageMin:20, ageMax:30, langues:[], loisirs:[], ambiance:"Peu importe", budget:600 };
+let colocCriteria = { sexe:"peu importe", ageMin:20, ageMax:30, langues:[], loisirs:[], ambiance:"Peu importe", budget:600, quartier:"Tous", type:"Tous", surface:15, pieces:1, tags:[] };
 let mode = "classic"; // "classic" ou "coloc"
 
 function sceneSVG(type){
@@ -1115,35 +1081,50 @@ function computeMatch(l, c){
 
 function computeColocMatch(l, c){
   let score = 0;
-  // budget 25%
+  // budget 20%
   let budgetScore = l.price <= c.budget ? 100 : Math.max(0, 100 - ((l.price - c.budget) / c.budget) * 180);
-  score += budgetScore * 0.25;
-  // âge : overlap entre la fourchette recherchée et celle du logement 25%
+  score += budgetScore * 0.20;
+  // âge : overlap entre la fourchette recherchée et celle du logement 15%
   const overlap = Math.min(l.ageMax, c.ageMax) - Math.max(l.ageMin, c.ageMin);
   const span = Math.max(l.ageMax - l.ageMin, c.ageMax - c.ageMin, 1);
   let ageScore = overlap > 0 ? Math.min(100, (overlap / span) * 130) : Math.max(0, 60 - Math.abs(overlap) * 10);
-  score += ageScore * 0.25;
-  // sexe recherché 15%
+  score += ageScore * 0.15;
+  // sexe recherché 10%
   let sexeScore = (c.sexe === "peu importe" || l.sexeRecherche === "peu importe" || c.sexe === l.sexeRecherche) ? 100 : 25;
-  score += sexeScore * 0.15;
-  // langues 15%
+  score += sexeScore * 0.10;
+  // langues 10%
   let langScore = 100;
   if(c.langues.length > 0){
     const matched = c.langues.filter(lg => l.langues.includes(lg)).length;
     langScore = (matched / c.langues.length) * 100;
   }
-  score += langScore * 0.15;
-  // loisirs communs avec les colocataires actuels 15%
+  score += langScore * 0.10;
+  // loisirs communs avec les colocataires actuels 10%
   let loisirScore = 100;
   if(c.loisirs.length > 0){
     const allLoisirs = l.roommates.flatMap(r => r.loisirs);
     const matched = c.loisirs.filter(h => allLoisirs.includes(h)).length;
     loisirScore = (matched / c.loisirs.length) * 100;
   }
-  score += loisirScore * 0.15;
+  score += loisirScore * 0.10;
   // ambiance 5%
   let ambianceScore = (c.ambiance === "Peu importe" || c.ambiance === l.ambiance) ? 100 : 40;
   score += ambianceScore * 0.05;
+  // type de bien 10%
+  let typeScore = (c.type === "Tous" || c.type === l.category) ? 100 : 30;
+  score += typeScore * 0.10;
+  // surface 10%
+  let surfScore = l.surface >= c.surface ? 100 : Math.max(0, 100 - ((c.surface - l.surface) / c.surface) * 150);
+  score += surfScore * 0.10;
+  // équipements 10%
+  let tagScore = 100;
+  if(c.tags.length > 0){
+    const matched = c.tags.filter(t => l.tags.includes(t)).length;
+    tagScore = (matched / c.tags.length) * 100;
+  }
+  score += tagScore * 0.10;
+  // quartier : comme pour la recherche classique
+  if(c.quartier !== "Tous" && l.neighborhood !== c.quartier) score *= 0.55;
   return Math.round(Math.max(0, Math.min(100, score)));
 }
 
@@ -1509,11 +1490,16 @@ function applyProjetRange(projet){
     critBudget.min = 400; critBudget.max = 2200; critBudget.step = 25; critBudget.value = 900;
     labelBudget.firstChild.textContent = 'Loyer max (charges comprises) ';
     document.getElementById('valBudget').textContent = '900 €/mois';
+  } else if(projet === 'colocation'){
+    critBudget.min = 250; critBudget.max = 1000; critBudget.step = 25; critBudget.value = 600;
+    labelBudget.firstChild.textContent = 'Budget max (colocation) ';
+    document.getElementById('valBudget').textContent = '600 €/mois';
   } else {
     critBudget.min = 100000; critBudget.max = 450000; critBudget.step = 5000; critBudget.value = 300000;
     labelBudget.firstChild.textContent = 'Budget max ';
     document.getElementById('valBudget').textContent = '300 000 €';
   }
+  document.getElementById('colocFieldsBlock').style.display = projet === 'colocation' ? 'block' : 'none';
 }
 critProjet.querySelectorAll('.chip').forEach(chip=>{
   chip.addEventListener('click', ()=>{
@@ -1541,82 +1527,7 @@ document.querySelectorAll('#critTags .chip').forEach(chip=>{
   chip.addEventListener('click', ()=> chip.classList.toggle('on'));
 });
 
-document.getElementById('applySearch').addEventListener('click', ()=>{
-  mode = "classic";
-  criteria = {
-    projet: critProjet.querySelector('.chip.on').dataset.projet,
-    quartier: selQuartier.value,
-    type: document.getElementById('critType').value,
-    budget: Number(critBudget.value),
-    surface: Number(critSurface.value),
-    pieces: Number(critPieces.value),
-    tags: Array.from(document.querySelectorAll('#critTags .chip.on')).map(c=>c.dataset.tag)
-  };
-
-  // Réorganise les annonces pas encore vues selon le nouveau matching,
-  // sans toucher à celles déjà passées en revue (historique/undo intacts).
-  const seen = listings.slice(0, index);
-  const remaining = listings.slice(index);
-  remaining.sort((a, b) => computeMatch(b, criteria) - computeMatch(a, criteria));
-  listings.splice(0, listings.length, ...seen, ...remaining);
-
-  document.querySelector('.tab[data-view="discover"]').click();
-  index = 0;
-  renderStack();
-  showToast('Annonces réorganisées selon ta recherche');
-});
-
-// ---- Recherche colocation ----
-const colocSheetEl = document.getElementById('colocSheet');
-const colocBackdrop = document.getElementById('colocBackdrop');
-const colocScroll = document.getElementById('colocScroll');
-const colocHandleZone = document.getElementById('colocHandleZone');
-
-function openColocSheet(){
-  colocSheetEl.classList.add('show');
-  colocBackdrop.classList.add('show');
-}
-function closeColocSheet(){
-  colocSheetEl.classList.remove('show');
-  colocBackdrop.classList.remove('show');
-  colocSheetEl.style.transform = '';
-}
-document.getElementById('colocOpenBtn').addEventListener('click', openColocSheet);
-document.getElementById('colocCancel').addEventListener('click', closeColocSheet);
-colocBackdrop.addEventListener('click', closeColocSheet);
-
-// Glissement vers le bas pour fermer, même logique que la fiche détaillée.
-(function(){
-  let startY = 0, dy = 0, dragging = false, startedAtTop = false;
-  function down(e){
-    const fromHandle = e.target === colocHandleZone || colocHandleZone.contains(e.target);
-    startedAtTop = fromHandle || colocScroll.scrollTop <= 0;
-    if(!startedAtTop) return;
-    startY = e.clientY; dy = 0; dragging = true;
-    colocSheetEl.style.transition = 'none';
-    if(colocSheetEl.setPointerCapture){ try { colocSheetEl.setPointerCapture(e.pointerId); } catch(err){} }
-  }
-  function move(e){
-    if(!dragging) return;
-    dy = e.clientY - startY;
-    if(dy > 0) colocSheetEl.style.transform = `translateY(${dy}px)`;
-  }
-  function up(e){
-    if(!dragging) return;
-    dragging = false;
-    colocSheetEl.style.transition = '';
-    if(colocSheetEl.releasePointerCapture && e && e.pointerId != null){
-      try { colocSheetEl.releasePointerCapture(e.pointerId); } catch(err){}
-    }
-    if(dy > 90) closeColocSheet(); else colocSheetEl.style.transform = '';
-    dy = 0;
-  }
-  colocSheetEl.addEventListener('pointerdown', down);
-  colocSheetEl.addEventListener('pointermove', move);
-  colocSheetEl.addEventListener('pointerup', up);
-  colocSheetEl.addEventListener('pointerleave', ()=>{ if(dragging) up(); });
-})();
-
+// ---- Champs spécifiques à la colocation (repliés sauf si "Colocation" est sélectionné) ----
 document.querySelectorAll('#colocSexe .chip').forEach(chip=>{
   chip.addEventListener('click', ()=>{
     document.querySelectorAll('#colocSexe .chip').forEach(c=>c.classList.remove('on'));
@@ -1647,31 +1558,50 @@ function updateColocAgeLabel(){
 colocAgeMin.addEventListener('input', updateColocAgeLabel);
 colocAgeMax.addEventListener('input', updateColocAgeLabel);
 
-const colocBudgetInput = document.getElementById('colocBudget');
-colocBudgetInput.addEventListener('input', ()=>{
-  document.getElementById('valColocBudget').textContent = Number(colocBudgetInput.value).toLocaleString('fr-FR') + ' €/mois';
-});
+// ---- Mettre à jour le matching (Achat / Location / Colocation, un seul bouton) ----
+document.getElementById('applySearch').addEventListener('click', ()=>{
+  const projet = critProjet.querySelector('.chip.on').dataset.projet;
+  const newMode = projet === 'colocation' ? 'coloc' : 'classic';
+  const modeChanged = newMode !== mode;
+  mode = newMode;
 
-document.getElementById('colocApply').addEventListener('click', ()=>{
-  let lo = Number(colocAgeMin.value), hi = Number(colocAgeMax.value);
-  if(lo > hi){ [lo, hi] = [hi, lo]; }
-  colocCriteria = {
-    sexe: document.querySelector('#colocSexe .chip.on').dataset.sexe,
-    ageMin: lo,
-    ageMax: hi,
-    langues: Array.from(document.querySelectorAll('#colocLangues .chip.on')).map(c=>c.dataset.langue),
-    loisirs: Array.from(document.querySelectorAll('#colocLoisirs .chip.on')).map(c=>c.dataset.loisir),
-    ambiance: document.querySelector('#colocAmbiance .chip.on').dataset.ambiance,
-    budget: Number(colocBudgetInput.value)
-  };
-  mode = "coloc";
-  colocListings.sort((a, b) => computeColocMatch(b, colocCriteria) - computeColocMatch(a, colocCriteria));
-  index = 0;
-  document.getElementById('colocBtnSub').textContent = 'Recherche active · appuie pour modifier';
-  closeColocSheet();
+  const quartier = selQuartier.value;
+  const type = document.getElementById('critType').value;
+  const budget = Number(critBudget.value);
+  const surface = Number(critSurface.value);
+  const pieces = Number(critPieces.value);
+  const tags = Array.from(document.querySelectorAll('#critTags .chip.on')).map(c=>c.dataset.tag);
+
+  if(mode === 'coloc'){
+    let lo = Number(colocAgeMin.value), hi = Number(colocAgeMax.value);
+    if(lo > hi){ [lo, hi] = [hi, lo]; }
+    colocCriteria = {
+      sexe: document.querySelector('#colocSexe .chip.on').dataset.sexe,
+      ageMin: lo, ageMax: hi,
+      langues: Array.from(document.querySelectorAll('#colocLangues .chip.on')).map(c=>c.dataset.langue),
+      loisirs: Array.from(document.querySelectorAll('#colocLoisirs .chip.on')).map(c=>c.dataset.loisir),
+      ambiance: document.querySelector('#colocAmbiance .chip.on').dataset.ambiance,
+      budget, quartier, type, surface, pieces, tags
+    };
+    if(modeChanged) index = 0;
+    const seen = colocListings.slice(0, index);
+    const remaining = colocListings.slice(index);
+    remaining.sort((a, b) => computeColocMatch(b, colocCriteria) - computeColocMatch(a, colocCriteria));
+    colocListings.splice(0, colocListings.length, ...seen, ...remaining);
+  } else {
+    criteria = { projet, quartier, type, budget, surface, pieces, tags };
+    if(modeChanged) index = 0;
+    // Réorganise les annonces pas encore vues selon le nouveau matching,
+    // sans toucher à celles déjà passées en revue (historique/undo intacts).
+    const seen = listings.slice(0, index);
+    const remaining = listings.slice(index);
+    remaining.sort((a, b) => computeMatch(b, criteria) - computeMatch(a, criteria));
+    listings.splice(0, listings.length, ...seen, ...remaining);
+  }
+
   document.querySelector('.tab[data-view="discover"]').click();
   renderStack();
-  showToast('Colocations mises en avant selon ton profil');
+  showToast(mode === 'coloc' ? 'Colocations mises en avant selon ton profil' : 'Annonces réorganisées selon ta recherche');
 });
 
 renderStack();
@@ -1900,7 +1830,7 @@ function resetApp(){
 
   // recherche colocation back to defaults
   mode = "classic";
-  colocCriteria = { sexe:"peu importe", ageMin:20, ageMax:30, langues:[], loisirs:[], ambiance:"Peu importe", budget:600 };
+  colocCriteria = { sexe:"peu importe", ageMin:20, ageMax:30, langues:[], loisirs:[], ambiance:"Peu importe", budget:600, quartier:"Tous", type:"Tous", surface:15, pieces:1, tags:[] };
   document.querySelectorAll('#colocSexe .chip').forEach(c=>c.classList.remove('on'));
   document.querySelector('#colocSexe [data-sexe="peu importe"]').classList.add('on');
   document.getElementById('valColocSexe').textContent = "Peu importe";
@@ -1910,9 +1840,7 @@ function resetApp(){
   document.querySelectorAll('#colocLoisirs .chip').forEach(c=>c.classList.remove('on'));
   document.querySelectorAll('#colocAmbiance .chip').forEach(c=>c.classList.remove('on'));
   document.querySelector('#colocAmbiance [data-ambiance="Peu importe"]').classList.add('on');
-  colocBudgetInput.value = 600;
-  document.getElementById('valColocBudget').textContent = "600 €/mois";
-  document.getElementById('colocBtnSub').textContent = "Définis ton profil de coloc idéal";
+  document.getElementById('colocFieldsBlock').style.display = 'none';
 
   // back to discover tab
   document.querySelector('.tab[data-view="discover"]').click();
