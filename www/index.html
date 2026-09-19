@@ -122,6 +122,47 @@
     background:var(--line);padding:6px 11px;border-radius:999px;
   }
   .sent-pill b{color:var(--ink);}
+  .bell-btn{
+    position:relative;width:34px;height:34px;border-radius:11px;
+    background:var(--line);display:flex;align-items:center;justify-content:center;
+    font-size:16px;cursor:pointer;flex-shrink:0;user-select:none;
+  }
+  .bell-badge{
+    position:absolute;top:-4px;right:-4px;min-width:16px;height:16px;padding:0 3px;
+    border-radius:999px;background:var(--grad-a);color:#fff;
+    font-size:9.5px;font-weight:800;display:none;
+    align-items:center;justify-content:center;border:2px solid #fff;
+  }
+  .bell-badge.show{display:flex;}
+  .notif-backdrop{ position:absolute;inset:0;z-index:240;display:none; }
+  .notif-backdrop.show{ display:block; }
+  .notif-panel{
+    position:absolute;top:60px;right:20px;left:20px;
+    background:#fff;border-radius:16px;
+    box-shadow:0 14px 34px rgba(22,24,29,0.20);
+    border:1px solid var(--line);
+    max-height:320px;overflow-y:auto;
+    padding:6px;display:none;flex-direction:column;gap:2px;
+    z-index:241;
+  }
+  .notif-panel.show{ display:flex;animation:overlayFade 0.16s ease; }
+  .notif-empty{ padding:22px 14px;text-align:center;font-size:12px;color:var(--muted);font-weight:600; }
+  .notif-item{
+    display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;
+    background:none;border:none;text-align:left;width:100%;cursor:pointer;
+    font-family:'Manrope',sans-serif;
+  }
+  .notif-item:active{ background:var(--line); }
+  .notif-item.unread{ background:rgba(255,122,89,0.07); }
+  .notif-ic{
+    width:38px;height:38px;border-radius:11px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;font-size:17px;
+    background:linear-gradient(135deg, var(--grad-a), var(--grad-b));color:#fff;
+  }
+  .notif-txt{ min-width:0;flex:1; }
+  .notif-title{ font-size:12.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis; }
+  .notif-sub{ font-size:10.5px;color:var(--muted);font-weight:600;margin-top:1px; }
+  .notif-item.unread .notif-sub{ color:var(--grad-a);font-weight:700; }
   .dev-menu-backdrop{
     position:absolute;inset:0;z-index:240;display:none;
   }
@@ -714,9 +755,13 @@
     </div>Kuça</div>
     <div class="top-right">
       <div class="sent-pill">envoyés <b id="sentCount">0</b></div>
+      <div class="bell-btn" id="bellBtn">🔔<span class="bell-badge" id="bellBadge">0</span></div>
       <div class="avatar-btn" id="avatarBtn">VB</div>
     </div>
   </div>
+
+  <div class="notif-backdrop" id="notifBackdrop"></div>
+  <div class="notif-panel" id="notifPanel"></div>
 
   <div class="dev-menu-backdrop" id="devMenuBackdrop"></div>
   <div class="dev-menu" id="devMenu">
@@ -1869,6 +1914,14 @@ function showSlotPicker(){
       return;
     }
     closeMatchOverlay();
+    let notif = findNotif(currentMatchListing);
+    if(!notif){
+      notif = { listing: currentMatchListing, slot: null, unread: false, funLine: visitFunLines[Math.floor(Math.random()*visitFunLines.length)] };
+      notifications.unshift(notif);
+    }
+    notif.slot = chosen.dataset.slot;
+    notif.unread = false;
+    updateBellBadge();
     showToast(`Visite confirmée avec <b>${currentMatchListing.agency}</b> — ${chosen.dataset.slot}`);
   });
 }
@@ -1965,6 +2018,107 @@ renderSharedSearchBlock();
 // ---- Splash screen ----
 const splashScreen = document.getElementById('splashScreen');
 
+// ---- Notifications (cloche) : dossiers acceptés & rendez-vous ----
+let notifications = [];
+const bellBtn = document.getElementById('bellBtn');
+const bellBadge = document.getElementById('bellBadge');
+const notifPanel = document.getElementById('notifPanel');
+const notifBackdrop = document.getElementById('notifBackdrop');
+
+const visitFunLines = [
+  "Ton coup de cœur t'attend, ne le laisse pas filer deux fois !",
+  "Save the date : ton coup de cœur a réservé cette case dans son agenda.",
+  "Prépare-toi à rencontrer ton coup de cœur en vrai, ça compte double.",
+  "Un coup de cœur, ça se visite en personne. Rendez-vous noté !"
+];
+
+function findNotif(listing){
+  return notifications.find(n => n.listing === listing);
+}
+function addOrUpdateNotification(listing){
+  let notif = findNotif(listing);
+  if(!notif){
+    notif = { listing, slot: null, unread: true, funLine: visitFunLines[Math.floor(Math.random()*visitFunLines.length)] };
+    notifications.unshift(notif);
+  } else {
+    notif.unread = true;
+  }
+  updateBellBadge();
+  renderNotifPanel();
+}
+function updateBellBadge(){
+  const count = notifications.filter(n => n.unread).length;
+  bellBadge.textContent = count;
+  bellBadge.classList.toggle('show', count > 0);
+}
+function renderNotifPanel(){
+  if(notifications.length === 0){
+    notifPanel.innerHTML = `<div class="notif-empty">Aucune notification pour l'instant.<br>Fais-toi accepter par une agence !</div>`;
+    return;
+  }
+  notifPanel.innerHTML = notifications.map((n, i) => `
+    <button class="notif-item ${n.unread ? 'unread' : ''}" data-notif-index="${i}">
+      <div class="notif-ic">${n.slot ? '📅' : '✓'}</div>
+      <div class="notif-txt">
+        <div class="notif-title">${n.listing.title}</div>
+        <div class="notif-sub">${n.slot ? 'Rendez-vous le ' + n.slot : n.listing.agency + ' a accepté ton dossier'}</div>
+      </div>
+    </button>
+  `).join('');
+  notifPanel.querySelectorAll('.notif-item').forEach(item=>{
+    item.addEventListener('click', ()=>{
+      const notif = notifications[Number(item.dataset.notifIndex)];
+      notif.unread = false;
+      updateBellBadge();
+      closeNotifPanel();
+      if(notif.slot){
+        openVisitBookedOverlay(notif);
+      } else {
+        openMatchOverlay(notif.listing, 'agency');
+      }
+    });
+  });
+}
+function openNotifPanel(){
+  renderNotifPanel();
+  notifPanel.classList.add('show');
+  notifBackdrop.classList.add('show');
+}
+function closeNotifPanel(){
+  notifPanel.classList.remove('show');
+  notifBackdrop.classList.remove('show');
+}
+bellBtn.addEventListener('click', ()=>{
+  notifPanel.classList.contains('show') ? closeNotifPanel() : openNotifPanel();
+});
+notifBackdrop.addEventListener('click', closeNotifPanel);
+
+function openVisitBookedOverlay(notif){
+  currentMatchListing = notif.listing;
+  document.getElementById('matchTitle').textContent = 'Rendez-vous confirmé';
+  document.getElementById('matchIcon').textContent = '📅';
+  matchAgencyLine.innerHTML = `Rendez-vous pris le <b>${notif.slot}</b><br><span style="font-size:11px;font-weight:600;">${notif.funLine}</span>`;
+  matchSummary.innerHTML = `
+    <img src="${commonsUrl(notif.listing.photos[0], 200)}">
+    <div class="txt">
+      <b>${notif.listing.title}</b>
+      <span>${notif.listing.neighborhood} · ${displayPrice(notif.listing)}</span>
+    </div>
+  `;
+  matchActions.innerHTML = `
+    <button class="secondary" id="matchReview">Revoir l'annonce</button>
+    <button class="primary" id="matchCloseVisit">Fermer</button>
+  `;
+  document.getElementById('matchReview').addEventListener('click', ()=>{
+    matchOverlay.classList.remove('show');
+    pendingMatchReturn = true;
+    document.querySelector('.tab[data-view="discover"]').click();
+    openDetails(currentMatchListing, true);
+  });
+  document.getElementById('matchCloseVisit').addEventListener('click', closeMatchOverlay);
+  matchOverlay.classList.add('show');
+}
+
 function resetApp(){
   // swipe stack
   index = 0; sent = []; history = [];
@@ -2006,6 +2160,11 @@ function resetApp(){
   document.querySelectorAll('#colocAmbiance .chip').forEach(c=>c.classList.remove('on'));
   document.querySelector('#colocAmbiance [data-ambiance="Peu importe"]').classList.add('on');
   document.getElementById('colocFieldsBlock').style.display = 'none';
+
+  // notifications
+  notifications = [];
+  updateBellBadge();
+  closeNotifPanel();
 
   // back to discover tab
   document.querySelector('.tab[data-view="discover"]').click();
@@ -2151,6 +2310,7 @@ document.getElementById('simulateMatchBtn').addEventListener('click', ()=>{
     return;
   }
   const listing = sent[Math.floor(Math.random() * sent.length)];
+  addOrUpdateNotification(listing);
   openMatchOverlay(listing, 'agency');
 });
 document.getElementById('matchClose').addEventListener('click', closeMatchOverlay);
